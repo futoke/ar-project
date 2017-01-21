@@ -1,1 +1,1 @@
-Aaugmented Reality android code project
+Augmented Reality android code project
