@@ -1,65 +1,228 @@
+module Main exposing (..)
+
 import Html exposing (..)
 import Html.Attributes exposing (..)
-import Html.Events exposing (onInput)
+import List exposing (..)
+import Navigation
+import String
 
 
+main : Program Never Model Msg
 main =
-  Html.beginnerProgram { model = model, view = view, update = update }
+    Navigation.program UrlChange
+        { init = init
+        , view = view
+        , update = update
+        , subscriptions = subscriptions
+        }
 
 
--- MODEL
+
+-- Model
+
 
 type alias Model =
-  { name : String
-  , password : String
-  , passwordAgain : String
-  }
+    { currentRoute : Navigation.Location
+    , users : List User
+    }
 
 
-model : Model
-model =
-  Model "" "" ""
+type alias User =
+    { id : Int
+    , name : String
+    , hobbies : List Hobby
+    }
 
 
--- UPDATE
+type alias Hobby =
+    String
+
+
+type alias RoutePath =
+    List String
+
+
+initialUsers : List User
+initialUsers =
+    [ User 1 "Fred" [ "running", "climbing" ]
+    , User 2 "Joe" [ "kayaking", "poodle grooming", "goat soccer" ]
+    , User 3 "Mark" [ "knitting", "kombucha making", "nya" ]
+    ]
+
+
+init : Navigation.Location -> ( Model, Cmd Msg )
+init location =
+    { currentRoute = location
+    , users = initialUsers
+    }
+        ! []
+
+
+
+-- Update
+
 
 type Msg
-    = Name String
-    | Password String
-    | PasswordAgain String
+    = UrlChange Navigation.Location
 
 
-update : Msg -> Model -> Model
+update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
-  case msg of
-    Name name ->
-      { model | name = name }
-
-    Password password ->
-      { model | password = password }
-
-    PasswordAgain password ->
-      { model | passwordAgain = password }
+    case msg of
+        UrlChange location ->
+            { model | currentRoute = location } ! []
 
 
--- VIEW
+
+-- Navigation
+
+
+fromUrlHash : String -> RoutePath
+fromUrlHash urlHash =
+    urlHash |> String.split "/" |> drop 1
+
+
+
+-- View
+
+
+userFromId : List User -> String -> Maybe User
+userFromId users idStr =
+    let
+        id =
+            Result.withDefault 0 (String.toInt idStr)
+    in
+        List.filter (\user -> id == user.id) users
+            |> head
+
+
+homePage : Html Msg
+homePage =
+    h1 [] [ text "Home" ]
+
+
+aboutPage : Html Msg
+aboutPage =
+    h1 [] [ text "About" ]
+
+
+notFoundPage : Html Msg
+notFoundPage =
+    h1 [] [ text "Page Not Found" ]
+
+
+usersPage : Model -> Html Msg
+usersPage model =
+    div []
+        [ h1 [] [ text "Users" ]
+        , ul []
+            (List.map
+                (\user ->
+                    li [] [ link user.name ("/#/users/" ++ toString user.id) ]
+                )
+                model.users
+            )
+        ]
+
+
+userPage : Model -> String -> Html Msg
+userPage model idStr =
+    let
+        user =
+            userFromId model.users idStr
+    in
+        case user of
+            Just u ->
+                div []
+                    [ h1 [] [ text ("User Profile") ]
+                    , h2 []
+                        [ link u.name ("/#/users/" ++ idStr ++ "/hobbies") ]
+                    ]
+
+            Nothing ->
+                div []
+                    [ h1 [] [ text "User not found" ]
+                    ]
+
+
+hobbiesPage : Model -> String -> Html Msg
+hobbiesPage model idStr =
+    let
+        user =
+            userFromId model.users idStr
+    in
+        case user of
+            Just u ->
+                div []
+                    [ h1 [] [ text "User Hobbies" ]
+                    , ul []
+                        (List.map (\hobby -> li [] [ text hobby ]) u.hobbies)
+                    ]
+
+            Nothing ->
+                text "user not found"
+
+
+pageBody : Model -> Html Msg
+pageBody model =
+    let
+        routePath =
+            fromUrlHash model.currentRoute.hash
+    in
+        case routePath of
+            [] ->
+                homePage
+
+            [ "home" ] ->
+                homePage
+
+            [ "about" ] ->
+                aboutPage
+
+            [ "users" ] ->
+                usersPage model
+
+            [ "users", userId ] ->
+                userPage model userId
+
+            [ "users", userId, "hobbies" ] ->
+                hobbiesPage model userId
+
+            _ ->
+                notFoundPage
+
+
+menuStyle : Html.Attribute Msg
+menuStyle =
+    style [ ( "list-style-type", "none" ) ]
+
+
+menuElementStyle : Html.Attribute Msg
+menuElementStyle =
+    style [ ( "display", "inline" ), ( "margin-left", "10px" ) ]
+
+
+link : String -> String -> Html Msg
+link name url =
+    a [ href url ] [ text name ]
+
 
 view : Model -> Html Msg
 view model =
-  div []
-    [ input [ type_ "text", placeholder "Name", onInput Name ] []
-    , input [ type_ "password", placeholder "Password", onInput Password ] []
-    , input [ type_ "password", placeholder "Re-enter Password", onInput PasswordAgain ] []
-    , viewValidation model
-    ]
+    div [ style [ ( "margin", "20px" ) ] ]
+        [ ul [ menuStyle ]
+            [ li [ menuElementStyle ] [ link "home" "#/home" ]
+            , li [ menuElementStyle ] [ link "about" "#/about" ]
+            , li [ menuElementStyle ] [ link "users" "#/users" ]
+            ]
+        , pageBody model
+        ]
 
-viewValidation : Model -> Html msg
-viewValidation model =
-  let
-    (color, message) =
-      if model.password == model.passwordAgain then
-        ("green", "OK")
-      else
-        ("red", "Passwords do not match!")
-  in
-    div [ style [("color", color)] ] [ text message ]
+
+
+-- Subscriptions
+
+
+subscriptions : Model -> Sub Msg
+subscriptions model =
+    Sub.none

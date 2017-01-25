@@ -1,7 +1,260 @@
-var _futoke$ar_project$Main$viewValidation = function (model) {
-	var _p0 = _elm_lang$core$Native_Utils.eq(model.password, model.passwordAgain) ? {ctor: '_Tuple2', _0: 'green', _1: 'OK'} : {ctor: '_Tuple2', _0: 'red', _1: 'Passwords do not match!'};
-	var color = _p0._0;
-	var message = _p0._1;
+var _futoke$ar_project$Main$subscriptions = function (model) {
+	return _elm_lang$core$Platform_Sub$none;
+};
+var _futoke$ar_project$Main$link = F2(
+	function (name, url) {
+		return A2(
+			_elm_lang$html$Html$a,
+			{
+				ctor: '::',
+				_0: _elm_lang$html$Html_Attributes$href(url),
+				_1: {ctor: '[]'}
+			},
+			{
+				ctor: '::',
+				_0: _elm_lang$html$Html$text(name),
+				_1: {ctor: '[]'}
+			});
+	});
+var _futoke$ar_project$Main$menuElementStyle = _elm_lang$html$Html_Attributes$style(
+	{
+		ctor: '::',
+		_0: {ctor: '_Tuple2', _0: 'display', _1: 'inline'},
+		_1: {
+			ctor: '::',
+			_0: {ctor: '_Tuple2', _0: 'margin-left', _1: '10px'},
+			_1: {ctor: '[]'}
+		}
+	});
+var _futoke$ar_project$Main$menuStyle = _elm_lang$html$Html_Attributes$style(
+	{
+		ctor: '::',
+		_0: {ctor: '_Tuple2', _0: 'list-style-type', _1: 'none'},
+		_1: {ctor: '[]'}
+	});
+var _futoke$ar_project$Main$usersPage = function (model) {
+	return A2(
+		_elm_lang$html$Html$div,
+		{ctor: '[]'},
+		{
+			ctor: '::',
+			_0: A2(
+				_elm_lang$html$Html$h1,
+				{ctor: '[]'},
+				{
+					ctor: '::',
+					_0: _elm_lang$html$Html$text('Users'),
+					_1: {ctor: '[]'}
+				}),
+			_1: {
+				ctor: '::',
+				_0: A2(
+					_elm_lang$html$Html$ul,
+					{ctor: '[]'},
+					A2(
+						_elm_lang$core$List$map,
+						function (user) {
+							return A2(
+								_elm_lang$html$Html$li,
+								{ctor: '[]'},
+								{
+									ctor: '::',
+									_0: A2(
+										_futoke$ar_project$Main$link,
+										user.name,
+										A2(
+											_elm_lang$core$Basics_ops['++'],
+											'/#/users/',
+											_elm_lang$core$Basics$toString(user.id))),
+									_1: {ctor: '[]'}
+								});
+						},
+						model.users)),
+				_1: {ctor: '[]'}
+			}
+		});
+};
+var _futoke$ar_project$Main$notFoundPage = A2(
+	_elm_lang$html$Html$h1,
+	{ctor: '[]'},
+	{
+		ctor: '::',
+		_0: _elm_lang$html$Html$text('Page Not Found'),
+		_1: {ctor: '[]'}
+	});
+var _futoke$ar_project$Main$aboutPage = A2(
+	_elm_lang$html$Html$h1,
+	{ctor: '[]'},
+	{
+		ctor: '::',
+		_0: _elm_lang$html$Html$text('About'),
+		_1: {ctor: '[]'}
+	});
+var _futoke$ar_project$Main$homePage = A2(
+	_elm_lang$html$Html$h1,
+	{ctor: '[]'},
+	{
+		ctor: '::',
+		_0: _elm_lang$html$Html$text('Home'),
+		_1: {ctor: '[]'}
+	});
+var _futoke$ar_project$Main$userFromId = F2(
+	function (users, idStr) {
+		var id = A2(
+			_elm_lang$core$Result$withDefault,
+			0,
+			_elm_lang$core$String$toInt(idStr));
+		return _elm_lang$core$List$head(
+			A2(
+				_elm_lang$core$List$filter,
+				function (user) {
+					return _elm_lang$core$Native_Utils.eq(id, user.id);
+				},
+				users));
+	});
+var _futoke$ar_project$Main$userPage = F2(
+	function (model, idStr) {
+		var user = A2(_futoke$ar_project$Main$userFromId, model.users, idStr);
+		var _p0 = user;
+		if (_p0.ctor === 'Just') {
+			return A2(
+				_elm_lang$html$Html$div,
+				{ctor: '[]'},
+				{
+					ctor: '::',
+					_0: A2(
+						_elm_lang$html$Html$h1,
+						{ctor: '[]'},
+						{
+							ctor: '::',
+							_0: _elm_lang$html$Html$text('User Profile'),
+							_1: {ctor: '[]'}
+						}),
+					_1: {
+						ctor: '::',
+						_0: A2(
+							_elm_lang$html$Html$h2,
+							{ctor: '[]'},
+							{
+								ctor: '::',
+								_0: A2(
+									_futoke$ar_project$Main$link,
+									_p0._0.name,
+									A2(
+										_elm_lang$core$Basics_ops['++'],
+										'/#/users/',
+										A2(_elm_lang$core$Basics_ops['++'], idStr, '/hobbies'))),
+								_1: {ctor: '[]'}
+							}),
+						_1: {ctor: '[]'}
+					}
+				});
+		} else {
+			return A2(
+				_elm_lang$html$Html$div,
+				{ctor: '[]'},
+				{
+					ctor: '::',
+					_0: A2(
+						_elm_lang$html$Html$h1,
+						{ctor: '[]'},
+						{
+							ctor: '::',
+							_0: _elm_lang$html$Html$text('User not found'),
+							_1: {ctor: '[]'}
+						}),
+					_1: {ctor: '[]'}
+				});
+		}
+	});
+var _futoke$ar_project$Main$hobbiesPage = F2(
+	function (model, idStr) {
+		var user = A2(_futoke$ar_project$Main$userFromId, model.users, idStr);
+		var _p1 = user;
+		if (_p1.ctor === 'Just') {
+			return A2(
+				_elm_lang$html$Html$div,
+				{ctor: '[]'},
+				{
+					ctor: '::',
+					_0: A2(
+						_elm_lang$html$Html$h1,
+						{ctor: '[]'},
+						{
+							ctor: '::',
+							_0: _elm_lang$html$Html$text('User Hobbies'),
+							_1: {ctor: '[]'}
+						}),
+					_1: {
+						ctor: '::',
+						_0: A2(
+							_elm_lang$html$Html$ul,
+							{ctor: '[]'},
+							A2(
+								_elm_lang$core$List$map,
+								function (hobby) {
+									return A2(
+										_elm_lang$html$Html$li,
+										{ctor: '[]'},
+										{
+											ctor: '::',
+											_0: _elm_lang$html$Html$text(hobby),
+											_1: {ctor: '[]'}
+										});
+								},
+								_p1._0.hobbies)),
+						_1: {ctor: '[]'}
+					}
+				});
+		} else {
+			return _elm_lang$html$Html$text('user not found');
+		}
+	});
+var _futoke$ar_project$Main$fromUrlHash = function (urlHash) {
+	return A2(
+		_elm_lang$core$List$drop,
+		1,
+		A2(_elm_lang$core$String$split, '/', urlHash));
+};
+var _futoke$ar_project$Main$pageBody = function (model) {
+	var routePath = _futoke$ar_project$Main$fromUrlHash(model.currentRoute.hash);
+	var _p2 = routePath;
+	_v2_6:
+	do {
+		if (_p2.ctor === '[]') {
+			return _futoke$ar_project$Main$homePage;
+		} else {
+			if (_p2._1.ctor === '[]') {
+				switch (_p2._0) {
+					case 'home':
+						return _futoke$ar_project$Main$homePage;
+					case 'about':
+						return _futoke$ar_project$Main$aboutPage;
+					case 'users':
+						return _futoke$ar_project$Main$usersPage(model);
+					default:
+						break _v2_6;
+				}
+			} else {
+				if (_p2._0 === 'users') {
+					if (_p2._1._1.ctor === '[]') {
+						return A2(_futoke$ar_project$Main$userPage, model, _p2._1._0);
+					} else {
+						if ((_p2._1._1._0 === 'hobbies') && (_p2._1._1._1.ctor === '[]')) {
+							return A2(_futoke$ar_project$Main$hobbiesPage, model, _p2._1._0);
+						} else {
+							break _v2_6;
+						}
+					}
+				} else {
+					break _v2_6;
+				}
+			}
+		}
+	} while(false);
+	return _futoke$ar_project$Main$notFoundPage;
+};
+var _futoke$ar_project$Main$view = function (model) {
 	return A2(
 		_elm_lang$html$Html$div,
 		{
@@ -9,115 +262,158 @@ var _futoke$ar_project$Main$viewValidation = function (model) {
 			_0: _elm_lang$html$Html_Attributes$style(
 				{
 					ctor: '::',
-					_0: {ctor: '_Tuple2', _0: 'color', _1: color},
+					_0: {ctor: '_Tuple2', _0: 'margin', _1: '20px'},
 					_1: {ctor: '[]'}
 				}),
 			_1: {ctor: '[]'}
 		},
 		{
 			ctor: '::',
-			_0: _elm_lang$html$Html$text(message),
-			_1: {ctor: '[]'}
+			_0: A2(
+				_elm_lang$html$Html$ul,
+				{
+					ctor: '::',
+					_0: _futoke$ar_project$Main$menuStyle,
+					_1: {ctor: '[]'}
+				},
+				{
+					ctor: '::',
+					_0: A2(
+						_elm_lang$html$Html$li,
+						{
+							ctor: '::',
+							_0: _futoke$ar_project$Main$menuElementStyle,
+							_1: {ctor: '[]'}
+						},
+						{
+							ctor: '::',
+							_0: A2(_futoke$ar_project$Main$link, 'home', '#/home'),
+							_1: {ctor: '[]'}
+						}),
+					_1: {
+						ctor: '::',
+						_0: A2(
+							_elm_lang$html$Html$li,
+							{
+								ctor: '::',
+								_0: _futoke$ar_project$Main$menuElementStyle,
+								_1: {ctor: '[]'}
+							},
+							{
+								ctor: '::',
+								_0: A2(_futoke$ar_project$Main$link, 'about', '#/about'),
+								_1: {ctor: '[]'}
+							}),
+						_1: {
+							ctor: '::',
+							_0: A2(
+								_elm_lang$html$Html$li,
+								{
+									ctor: '::',
+									_0: _futoke$ar_project$Main$menuElementStyle,
+									_1: {ctor: '[]'}
+								},
+								{
+									ctor: '::',
+									_0: A2(_futoke$ar_project$Main$link, 'users', '#/users'),
+									_1: {ctor: '[]'}
+								}),
+							_1: {ctor: '[]'}
+						}
+					}
+				}),
+			_1: {
+				ctor: '::',
+				_0: _futoke$ar_project$Main$pageBody(model),
+				_1: {ctor: '[]'}
+			}
 		});
 };
 var _futoke$ar_project$Main$update = F2(
 	function (msg, model) {
-		var _p1 = msg;
-		switch (_p1.ctor) {
-			case 'Name':
-				return _elm_lang$core$Native_Utils.update(
-					model,
-					{name: _p1._0});
-			case 'Password':
-				return _elm_lang$core$Native_Utils.update(
-					model,
-					{password: _p1._0});
-			default:
-				return _elm_lang$core$Native_Utils.update(
-					model,
-					{passwordAgain: _p1._0});
-		}
+		var _p3 = msg;
+		return A2(
+			_elm_lang$core$Platform_Cmd_ops['!'],
+			_elm_lang$core$Native_Utils.update(
+				model,
+				{currentRoute: _p3._0}),
+			{ctor: '[]'});
 	});
-var _futoke$ar_project$Main$Model = F3(
+var _futoke$ar_project$Main$Model = F2(
+	function (a, b) {
+		return {currentRoute: a, users: b};
+	});
+var _futoke$ar_project$Main$User = F3(
 	function (a, b, c) {
-		return {name: a, password: b, passwordAgain: c};
+		return {id: a, name: b, hobbies: c};
 	});
-var _futoke$ar_project$Main$model = A3(_futoke$ar_project$Main$Model, '', '', '');
-var _futoke$ar_project$Main$PasswordAgain = function (a) {
-	return {ctor: 'PasswordAgain', _0: a};
-};
-var _futoke$ar_project$Main$Password = function (a) {
-	return {ctor: 'Password', _0: a};
-};
-var _futoke$ar_project$Main$Name = function (a) {
-	return {ctor: 'Name', _0: a};
-};
-var _futoke$ar_project$Main$view = function (model) {
-	return A2(
-		_elm_lang$html$Html$div,
-		{ctor: '[]'},
+var _futoke$ar_project$Main$initialUsers = {
+	ctor: '::',
+	_0: A3(
+		_futoke$ar_project$Main$User,
+		1,
+		'Fred',
 		{
 			ctor: '::',
-			_0: A2(
-				_elm_lang$html$Html$input,
-				{
-					ctor: '::',
-					_0: _elm_lang$html$Html_Attributes$type_('text'),
-					_1: {
-						ctor: '::',
-						_0: _elm_lang$html$Html_Attributes$placeholder('Name'),
-						_1: {
-							ctor: '::',
-							_0: _elm_lang$html$Html_Events$onInput(_futoke$ar_project$Main$Name),
-							_1: {ctor: '[]'}
-						}
-					}
-				},
-				{ctor: '[]'}),
+			_0: 'running',
 			_1: {
 				ctor: '::',
-				_0: A2(
-					_elm_lang$html$Html$input,
-					{
-						ctor: '::',
-						_0: _elm_lang$html$Html_Attributes$type_('password'),
-						_1: {
-							ctor: '::',
-							_0: _elm_lang$html$Html_Attributes$placeholder('Password'),
-							_1: {
-								ctor: '::',
-								_0: _elm_lang$html$Html_Events$onInput(_futoke$ar_project$Main$Password),
-								_1: {ctor: '[]'}
-							}
-						}
-					},
-					{ctor: '[]'}),
+				_0: 'climbing',
+				_1: {ctor: '[]'}
+			}
+		}),
+	_1: {
+		ctor: '::',
+		_0: A3(
+			_futoke$ar_project$Main$User,
+			2,
+			'Joe',
+			{
+				ctor: '::',
+				_0: 'kayaking',
 				_1: {
 					ctor: '::',
-					_0: A2(
-						_elm_lang$html$Html$input,
-						{
-							ctor: '::',
-							_0: _elm_lang$html$Html_Attributes$type_('password'),
-							_1: {
-								ctor: '::',
-								_0: _elm_lang$html$Html_Attributes$placeholder('Re-enter Password'),
-								_1: {
-									ctor: '::',
-									_0: _elm_lang$html$Html_Events$onInput(_futoke$ar_project$Main$PasswordAgain),
-									_1: {ctor: '[]'}
-								}
-							}
-						},
-						{ctor: '[]'}),
+					_0: 'poodle grooming',
 					_1: {
 						ctor: '::',
-						_0: _futoke$ar_project$Main$viewValidation(model),
+						_0: 'goat soccer',
 						_1: {ctor: '[]'}
 					}
 				}
-			}
-		});
+			}),
+		_1: {
+			ctor: '::',
+			_0: A3(
+				_futoke$ar_project$Main$User,
+				3,
+				'Mark',
+				{
+					ctor: '::',
+					_0: 'knitting',
+					_1: {
+						ctor: '::',
+						_0: 'kombucha making',
+						_1: {
+							ctor: '::',
+							_0: 'nya',
+							_1: {ctor: '[]'}
+						}
+					}
+				}),
+			_1: {ctor: '[]'}
+		}
+	}
 };
-var _futoke$ar_project$Main$main = _elm_lang$html$Html$beginnerProgram(
-	{model: _futoke$ar_project$Main$model, view: _futoke$ar_project$Main$view, update: _futoke$ar_project$Main$update})();
+var _futoke$ar_project$Main$init = function (location) {
+	return A2(
+		_elm_lang$core$Platform_Cmd_ops['!'],
+		{currentRoute: location, users: _futoke$ar_project$Main$initialUsers},
+		{ctor: '[]'});
+};
+var _futoke$ar_project$Main$UrlChange = function (a) {
+	return {ctor: 'UrlChange', _0: a};
+};
+var _futoke$ar_project$Main$main = A2(
+	_elm_lang$navigation$Navigation$program,
+	_futoke$ar_project$Main$UrlChange,
+	{init: _futoke$ar_project$Main$init, view: _futoke$ar_project$Main$view, update: _futoke$ar_project$Main$update, subscriptions: _futoke$ar_project$Main$subscriptions})();

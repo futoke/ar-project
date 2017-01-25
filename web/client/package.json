@@ -16,16 +16,14 @@
     "url": "https://github.com/futoke/ar-project/issues"
   },
   "scripts": {
-    "dev": "gulp",
-    "build": "gulp build"
+    "watch": "elm-live src/*.elm --host=0.0.0.0 --port=8080 --open --pushstate --output dist/bundle.js --debug",
+    "test": "elm-test"
   },
   "homepage": "https://github.com/futoke/ar-project",
   "dependencies": {},
   "devDependencies": {
-    "gulp": "^3.9.1",
-    "gulp-connect": "^4.0.0",
-    "gulp-elm": "^0.4.4",
-    "gulp-plumber": "^1.1.0",
-    "gulp-util": "^3.0.7"
+    "elm": "^0.18.0",
+    "elm-live": "^2.6.0",
+    "elm-test": "^0.17.3"
   }
 }
