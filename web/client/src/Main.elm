@@ -1,7 +1,9 @@
 module Main exposing (..)
 
 import Html exposing (..)
+import Html.Events exposing (..)
 import Html.Attributes exposing (..)
+
 import List exposing (..)
 import Navigation
 import String
@@ -15,8 +17,6 @@ main =
         , update = update
         , subscriptions = subscriptions
         }
-
-
 
 -- Model
 
@@ -57,8 +57,6 @@ init location =
     }
         ! []
 
-
-
 -- Update
 
 
@@ -71,7 +69,6 @@ update msg model =
     case msg of
         UrlChange location ->
             { model | currentRoute = location } ! []
-
 
 
 -- Navigation
@@ -96,14 +93,52 @@ userFromId users idStr =
             |> head
 
 
-homePage : Html Msg
-homePage =
-    h1 [] [ text "Home" ]
+loginPage : Html Msg
+loginPage =
+    div [ class "container" ]
+    [ div [ class "mainbox col-md-6 col-md-offset-3 col-sm-6 col-sm-offset-3", id "loginbox" ]
+        [ div [ class "panel panel-primary" ]
+            [ div [ class "panel-heading" ]
+                [ div [ class "panel-title text-center" ]
+                    [ text "Вход в панель управления" ]
+                ]
+            , div [ class "panel-body" ]
+                [ Html.form [ class "form-horizontal", enctype "multipart/form-data", id "form", method "POST", name "form" ]
+                    [ div [ class "input-group" ]
+                        [ span [ class "input-group-addon" ]
+                            [ i [ class "glyphicon glyphicon-user" ]
+                                []
+                            ]
+                        , input [ class "form-control", id "user", name "user", placeholder "Логин", type_ "text", value "" ]
+                            []
+                        ]
+                    , div [ class "input-group" ]
+                        [ span [ class "input-group-addon" ]
+                            [ i [ class "glyphicon glyphicon-lock" ]
+                                []
+                            ]
+                        , input [ class "form-control", id "password", name "password", placeholder "Пароль", type_ "password" ]
+                            []
+                        ]
+                    , div [ class "form-group" ]
+                        [ div [ class "col-sm-12 controls" ]
+                            [ button [ class "btn btn-primary pull-right", type_ "submit" ]
+                                [ i [ class "glyphicon glyphicon-log-in" ]
+                                    []
+                                , text " Войти"
+                                ]
+                            ]
+                        ]
+                    ]
+                ]
+            ]
+        ]
+    ]
 
 
 aboutPage : Html Msg
 aboutPage =
-    h1 [] [ text "About" ]
+    h1 [] [ text "about" ]
 
 
 notFoundPage : Html Msg
@@ -171,10 +206,10 @@ pageBody model =
     in
         case routePath of
             [] ->
-                homePage
+                loginPage
 
-            [ "home" ] ->
-                homePage
+            [ "login" ] ->
+                loginPage
 
             [ "about" ] ->
                 aboutPage
@@ -210,13 +245,14 @@ link name url =
 view : Model -> Html Msg
 view model =
     div [ style [ ( "margin", "20px" ) ] ]
-        [ ul [ menuStyle ]
-            [ li [ menuElementStyle ] [ link "home" "#/home" ]
-            , li [ menuElementStyle ] [ link "about" "#/about" ]
-            , li [ menuElementStyle ] [ link "users" "#/users" ]
-            ]
-        , pageBody model
-        ]
+        -- [ ul [ menuStyle ]
+        --     [ li [ menuElementStyle ] [ link "Страница входа" "#/login" ]
+        --     , li [ menuElementStyle ] [ link "about" "#/about" ]
+        --     , li [ menuElementStyle ] [ link "users" "#/users" ]
+        --     ]
+        -- , pageBody model
+        -- ]
+        [ pageBody model ]
 
 
 

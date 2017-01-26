@@ -1,0 +1,164 @@
+<html ng-app="app">
+
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <title>AR project</title>
+
+        <!-- Latest compiled and minified CSS -->
+        <link
+                rel="stylesheet"
+                href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
+                integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u"
+                crossorigin="anonymous">
+
+        <!-- Optional theme -->
+        <link
+                rel="stylesheet"
+                href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css"
+                integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp"
+                crossorigin="anonymous">
+
+        <!-- Bower -->
+        <link
+            href="static/bower_components/angular-xeditable/dist/css/xeditable.css"
+            rel="stylesheet">
+
+        <!-- Application styles -->
+        <link rel="stylesheet" href="static/style.css">
+    </head>
+
+    <body>
+        <div ng-controller="Ctrl">
+            <!-- editable element -->
+            <a href="#" editable-text="user.name">
+                {{ '{{user.name || "empty"}}' }}
+            </a>
+            <div id="debug" style="margin-top: 30px">
+                {{ '{{user | json}}' }}
+            </div>
+        </div>
+
+        <div ng-controller="EditableRowCtrl">
+            <table class="table table-bordered table-hover table-condensed">
+                <tr style="font-weight: bold">
+                    <td style="width:35%">Name</td>
+                    <td style="width:20%">Status</td>
+                    <td style="width:20%">Group</td>
+                    <td style="width:25%">Edit</td>
+                </tr>
+
+                <tr ng-repeat="user in users">
+                    <td>
+                        <!-- editable username (text with validation) -->
+                        <span
+                                editable-text="user.name"
+                                e-name="name"
+                                e-form="rowform"
+                                onbeforesave="checkName($data, user.id)">
+                            {{ '{{ user.name || "empty" }}' }}
+                        </span>
+                    </td>
+
+                    <td>
+                        <!-- editable status (select-local) -->
+                        <span
+                                editable-select="user.status"
+                                e-name="status"
+                                e-form="rowform"
+                                e-ng-options="s.value as s.text for s in statuses">
+                            {{ '{{ showStatus(user) }}' }}
+                        </span>
+                    </td>
+
+                    <td>
+                        <!-- editable group (select-remote) -->
+                        <span
+                                editable-select="user.group"
+                                e-name="group"
+                                onshow="loadGroups()"
+                                e-form="rowform"
+                                e-ng-options="g.id as g.text for g in groups">
+                            {{ '{{ showGroup(user) }}' }}
+                        </span>
+                    </td>
+
+                    <td style="white-space: nowrap">
+                        <!-- form -->
+                        <form
+                                editable-form name="rowform"
+                                onbeforesave="saveUser($data, user.id)"
+                                ng-show="rowform.$visible"
+                                class="form-buttons form-inline"
+                                shown="inserted == user">
+                            <button
+                                    type="submit"
+                                    ng-disabled="rowform.$waiting"
+                                    class="btn btn-primary">
+                                save
+                            </button>
+
+                            <button
+                                    type="button"
+                                    ng-disabled="rowform.$waiting"
+                                    ng-click="rowform.$cancel()"
+                                    class="btn btn-default">
+                                cancel
+                            </button>
+                        </form>
+
+                        <div class="buttons" ng-show="!rowform.$visible">
+                            <button
+                                    type="button"
+                                    class="btn btn-primary"
+                                    ng-click="rowform.$show()">
+                                edit
+                            </button>
+
+                            <button
+                                    type="button"
+                                    class="btn btn-danger"
+                                    ng-click="removeUser($index)">
+                                del
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+            </table>
+
+            <button
+                    type="button"
+                    class="btn btn-default"
+                    ng-click="addUser()">
+                Add row
+            </button>
+        </div>
+
+        <p>Click <a href="/logout">here</a> to logout.</p>
+            {% for message in get_flashed_messages() %}
+                {{ message }}
+            {% endfor %}
+
+        <!-- Bootstrap: jQuery (necessary for Bootstrap's JavaScript plugins) -->
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+
+        <!-- Latest compiled and minified JavaScript -->
+        <script
+                src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"
+                integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
+                crossorigin="anonymous">
+        </script>
+
+        <!-- Latest compiled and minified Angular ONE -->
+        <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.7/angular.min.js"></script>
+
+        <!-- Bower -->
+        <script src="static/bower_components/angular-xeditable/dist/js/xeditable.js"></script>
+
+        <!-- Application: Javascript -->
+        <script type="text/javascript" src="static/app.js"></script>
+    </body>
+
+</html>
