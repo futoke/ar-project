@@ -8,138 +8,344 @@
         <title>AR project</title>
 
         <!-- Latest compiled and minified CSS -->
-        <link
-                rel="stylesheet"
-                href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
-                integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u"
-                crossorigin="anonymous">
+        <!--<link-->
+        <!--        rel="stylesheet"-->
+        <!--        href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"-->
+        <!--        integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u"-->
+        <!--        crossorigin="anonymous">-->
+
+        <!--<link-->
+        <!--        rel="stylesheet"-->
+        <!--        href="https://maxcdn.bootstrapcdn.com/bootswatch/3.3.7/yeti/bootstrap.min.css"-->
+        <!--        integrity="sha384-HzUaiJdCTIY/RL2vDPRGdEQHHahjzwoJJzGUkYjHVzTwXFQ2QN/nVgX7tzoMW3Ov"-->
+        <!--        crossorigin="anonymous">-->
+
+        <!--<link-->
+        <!--        rel="stylesheet"-->
+        <!--        href="https://maxcdn.bootstrapcdn.com/bootswatch/3.3.7/flatly/bootstrap.min.css"-->
+        <!--        integrity="sha384-+ENW/yibaokMnme+vBLnHMphUYxHs34h9lpdbSLuAwGkOKFRl4C34WkjazBtb7eT"-->
+        <!--        crossorigin="anonymous">-->
+
+        <!--<link-->
+        <!--        rel="stylesheet"-->
+        <!--        href="https://maxcdn.bootstrapcdn.com/bootswatch/3.3.7/lumen/bootstrap.min.css"-->
+        <!--        integrity="sha384-gv0oNvwnqzF6ULI9TVsSmnULNb3zasNysvWwfT/s4l8k5I+g6oFz9dye0wg3rQ2Q"-->
+        <!--        crossorigin="anonymous">-->
+
+        <link rel="stylesheet" href="static/bootstrap.min.css">
 
         <!-- Optional theme -->
-        <link
-                rel="stylesheet"
-                href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css"
-                integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp"
-                crossorigin="anonymous">
+        <!--<link-->
+        <!--        rel="stylesheet"-->
+        <!--        href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css"-->
+        <!--        integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp"-->
+        <!--        crossorigin="anonymous">-->
 
         <!-- Bower -->
         <link
-            href="static/bower_components/angular-xeditable/dist/css/xeditable.css"
-            rel="stylesheet">
+                rel="stylesheet"
+                href="static/bower_components/angular-xeditable/dist/css/xeditable.css">
+        <link
+                rel="stylesheet"
+                href="static/bower_components/components-font-awesome/css/font-awesome.min.css">
 
         <!-- Application styles -->
         <link rel="stylesheet" href="static/style.css">
+
+        <!-- Google fonts -->
+        <link
+                rel="stylesheet"
+                href="https://fonts.googleapis.com/css?family=Philosopher:400,400i,700,700i&amp;subset=cyrillic,cyrillic-ext">
     </head>
 
     <body>
-        <div ng-controller="Ctrl">
-            <!-- editable element -->
-            <a href="#" editable-text="user.name">
-                {{ '{{user.name || "empty"}}' }}
-            </a>
-            <div id="debug" style="margin-top: 30px">
-                {{ '{{user | json}}' }}
+        <div ng-controller="EditableRowCtrl">
+            <div class="container">
+                <!-- Menu -->
+                <div class="row">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <div class="panel-title">
+                                <h4>
+                                    <strong>
+                                        Панель управления 3D моделями
+                                    </strong>
+                                </h4>
+                            </div>
+                        </div>
+                        <div class="panel-body">
+                            <div
+                                    class="btn-group"
+                                    role="group"
+                                    aria-label="menu">
+                                <button
+                                        type="button"
+                                        class="btn btn-default"
+                                        ng-click="addUser()"
+                                        title="Добавить модель">
+                                    <i
+                                            class="fa fa-plus"
+                                            aria-hidden="true">
+                                    </i> Добавить модель
+                                </button>
+
+                                <button
+                                        type="button"
+                                        class="btn btn-default"
+                                        title="Выйти"
+                                        onclick="window.location.href='/logout'">
+                                    <i
+                                            class="fa fa-sign-out"
+                                            aria-hidden="true">
+                                    </i> Выйти
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Table -->
+                <div class="row">
+                    <div class="panel panel-default">
+                        <div class="table-responsive">
+                            <table class="table table-bordered table-hover table-condensed">
+                                <thead>
+                                    <tr class="active">
+                                        <th class="col-xs-2 col-md-1"></th>
+
+                                        <th class="col-xs-2 col-md-1"></th>
+
+                                        <th
+                                                class="text-center col-xs-1 col-md-2"
+                                                style="vertical-align:top;">
+                                            2D изображение
+                                        </th>
+
+                                        <th
+                                                class="text-center col-xs-2 col-md-2"
+                                                style="vertical-align:top;">
+                                            Название
+                                        </th>
+
+                                        <th class="text-center col-xs-2 col-md-2">
+                                            Загрузить 3D модель <br> .fbx или .obj
+                                        </th>
+
+                                         <th class="text-center col-xs-2 col-md-2">
+                                            Загрузить текстуру <br> .png или .jpg
+                                        </th>
+
+                                        <th
+                                                class="text-center col-xs-2 col-md-2"
+                                                style="vertical-align:top;">
+                                            Дата загрузки
+                                        </th>
+                                    </tr>
+                                </thead>
+
+                                <tbody>
+                                    <tr ng-repeat="user in users">
+                                        <!-- The first column -->
+                                        <!--<td align="center">-->
+                                            <!-- Form -->
+                                        <!--    <form-->
+                                        <!--            editable-form name="rowform"-->
+                                        <!--            onbeforesave="saveUser($data, user.id)"-->
+                                        <!--            ng-show="rowform.$visible"-->
+                                        <!--            class="form-buttons form-inline"-->
+                                        <!--            shown="inserted == user">-->
+                                        <!--        <div-->
+                                        <!--                class="btn-group"-->
+                                        <!--                role="group"-->
+                                        <!--                aria-label="edit-row">-->
+                                        <!--            <button-->
+                                        <!--                    type="submit"-->
+                                        <!--                    title="Сохранить"-->
+                                        <!--                    ng-disabled="rowform.$waiting"-->
+                                        <!--                    class="btn btn-default">-->
+                                        <!--                <i-->
+                                        <!--                        class="fa fa-floppy-o"-->
+                                        <!--                        aria-hidden="true">-->
+                                        <!--                </i>-->
+                                        <!--            </button>-->
+
+                                        <!--            <button-->
+                                        <!--                    type="button"-->
+                                        <!--                    title="Отменить"-->
+                                        <!--                    ng-disabled="rowform.$waiting"-->
+                                        <!--                    ng-click="rowform.$cancel()"-->
+                                        <!--                    class="btn btn-default">-->
+                                        <!--                <i-->
+                                        <!--                        class="fa fa-undo"-->
+                                        <!--                        aria-hidden="true">-->
+                                        <!--                </i>-->
+                                        <!--            </button>-->
+                                        <!--        </div>-->
+                                        <!--    </form>-->
+
+                                        <!--    <div-->
+                                        <!--            class="buttons"-->
+                                        <!--            ng-show="!rowform.$visible">-->
+                                        <!--        <div-->
+                                        <!--                class="btn-group"-->
+                                        <!--                role="group"-->
+                                        <!--                aria-label="edit-row">-->
+                                        <!--            <button-->
+                                        <!--                    type="button"-->
+                                        <!--                    title="Редактировать"-->
+                                        <!--                    class="btn btn-default"-->
+                                        <!--                    ng-click="rowform.$show()">-->
+                                        <!--                <i-->
+                                        <!--                        class="fa fa-pencil"-->
+                                        <!--                        aria-hidden="true">-->
+                                        <!--                </i>-->
+                                        <!--            </button>-->
+
+                                        <!--            <button-->
+                                        <!--                    type="button"-->
+                                        <!--                    title="Удалить"-->
+                                        <!--                    class="btn btn-default"-->
+                                        <!--                    ng-click="removeUser($index)">-->
+                                        <!--                <i-->
+                                        <!--                        class="fa fa-trash"-->
+                                        <!--                        aria-hidden="true">-->
+                                        <!--                </i>-->
+                                        <!--            </button>-->
+                                        <!--        </div>-->
+                                        <!--    </div>-->
+                                        <!--</td>-->
+
+                                        <td align="center">
+                                            <!-- form -->
+                                            <form
+                                                    editable-form name="rowform"
+                                                    onbeforesave="saveUser($data, user.id)"
+                                                    ng-show="rowform.$visible"
+                                                    class="form-buttons form-inline"
+                                                    shown="inserted == user">
+                                                <div
+                                                        class="btn-group-vertical"
+                                                        role="group"
+                                                        aria-label="edit-row">
+                                                    <button
+                                                            type="submit"
+                                                            title="Сохранить"
+                                                            ng-disabled="rowform.$waiting"
+                                                            class="btn btn-default">
+                                                        <i
+                                                                class="fa fa-floppy-o"
+                                                                aria-hidden="true">
+                                                        </i> Сохранить
+                                                    </button>
+
+                                                    <button
+                                                            type="button"
+                                                            title="Отменить"
+                                                            ng-disabled="rowform.$waiting"
+                                                            ng-click="rowform.$cancel()"
+                                                            class="btn btn-default">
+                                                        <i
+                                                                class="fa fa-undo"
+                                                                aria-hidden="true">
+                                                        </i> Отменить
+                                                    </button>
+                                                </div>
+                                            </form>
+
+                                            <div
+                                                    class="buttons"
+                                                    ng-show="!rowform.$visible">
+                                                <div
+                                                        class="btn-group-vertical"
+                                                        role="group"
+                                                        aria-label="edit-row">
+                                                    <button
+                                                            type="button"
+                                                            title="Редактировать"
+                                                            class="btn btn-default"
+                                                            ng-click="rowform.$show()">
+                                                        <i
+                                                                class="fa fa-pencil"
+                                                                aria-hidden="true">
+                                                        </i> Редактировать
+                                                    </button>
+
+                                                    <button
+                                                            type="button"
+                                                            title="Удалить"
+                                                            class="btn btn-default"
+                                                            ng-click="removeUser($index)">
+                                                        <i
+                                                                class="fa fa-trash"
+                                                                aria-hidden="true">
+                                                        </i> Удалить
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </td>
+
+                                        <td  align="center">
+                                            <thumbnail
+                                                    file-type="image"
+                                                    source="static/models/test.jpg"
+                                                    max-height="150"
+                                                    max-width="150">
+                                            </thumbnail>
+                                        </td>
+
+                                        <td>
+                                            <span
+                                                    editable-text="user.name"
+                                                    e-name="name"
+                                                    e-form="rowform"
+                                                    e-formclass="input-group-btn"
+                                                    e-inputgroupright="right"
+                                                    onbeforesave="checkName($data, user.id)">
+                                                <p class="text-center">
+                                                    {{ '{{ user.name || "empty" }}' }}
+                                                </p>
+                                            </span>
+                                        </td>
+
+                                        <td>
+                                            <!-- editable status (select-local) -->
+                                            <!--<span-->
+                                            <!--        editable-select="user.status"-->
+                                            <!--        e-name="status"-->
+                                            <!--        e-form="rowform"-->
+                                            <!--        e-ng-options="s.value as s.text for s in statuses">-->
+                                            <!--    {{ '{{ showStatus(user) }}' }}-->
+                                            <!--</span>-->
+                                        </td>
+
+                                        <td>
+                                            <!-- editable group (select-remote) -->
+                                            <!--<span-->
+                                            <!--        editable-select="user.group"-->
+                                            <!--        e-name="group"-->
+                                            <!--        onshow="loadGroups()"-->
+                                            <!--        e-form="rowform"-->
+                                            <!--        e-ng-options="g.id as g.text for g in groups">-->
+                                            <!--    {{ '{{ showGroup(user) }}' }}-->
+                                            <!--</span>-->
+                                        </td>
+
+                                        <td>
+
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
 
-        <div ng-controller="EditableRowCtrl">
-            <table class="table table-bordered table-hover table-condensed">
-                <tr style="font-weight: bold">
-                    <td style="width:35%">Name</td>
-                    <td style="width:20%">Status</td>
-                    <td style="width:20%">Group</td>
-                    <td style="width:25%">Edit</td>
-                </tr>
-
-                <tr ng-repeat="user in users">
-                    <td>
-                        <!-- editable username (text with validation) -->
-                        <span
-                                editable-text="user.name"
-                                e-name="name"
-                                e-form="rowform"
-                                onbeforesave="checkName($data, user.id)">
-                            {{ '{{ user.name || "empty" }}' }}
-                        </span>
-                    </td>
-
-                    <td>
-                        <!-- editable status (select-local) -->
-                        <span
-                                editable-select="user.status"
-                                e-name="status"
-                                e-form="rowform"
-                                e-ng-options="s.value as s.text for s in statuses">
-                            {{ '{{ showStatus(user) }}' }}
-                        </span>
-                    </td>
-
-                    <td>
-                        <!-- editable group (select-remote) -->
-                        <span
-                                editable-select="user.group"
-                                e-name="group"
-                                onshow="loadGroups()"
-                                e-form="rowform"
-                                e-ng-options="g.id as g.text for g in groups">
-                            {{ '{{ showGroup(user) }}' }}
-                        </span>
-                    </td>
-
-                    <td style="white-space: nowrap">
-                        <!-- form -->
-                        <form
-                                editable-form name="rowform"
-                                onbeforesave="saveUser($data, user.id)"
-                                ng-show="rowform.$visible"
-                                class="form-buttons form-inline"
-                                shown="inserted == user">
-                            <button
-                                    type="submit"
-                                    ng-disabled="rowform.$waiting"
-                                    class="btn btn-primary">
-                                save
-                            </button>
-
-                            <button
-                                    type="button"
-                                    ng-disabled="rowform.$waiting"
-                                    ng-click="rowform.$cancel()"
-                                    class="btn btn-default">
-                                cancel
-                            </button>
-                        </form>
-
-                        <div class="buttons" ng-show="!rowform.$visible">
-                            <button
-                                    type="button"
-                                    class="btn btn-primary"
-                                    ng-click="rowform.$show()">
-                                edit
-                            </button>
-
-                            <button
-                                    type="button"
-                                    class="btn btn-danger"
-                                    ng-click="removeUser($index)">
-                                del
-                            </button>
-                        </div>
-                    </td>
-                </tr>
-            </table>
-
-            <button
-                    type="button"
-                    class="btn btn-default"
-                    ng-click="addUser()">
-                Add row
-            </button>
-        </div>
-
-        <p>Click <a href="/logout">here</a> to logout.</p>
-            {% for message in get_flashed_messages() %}
-                {{ message }}
-            {% endfor %}
+        <!--<p>Click <a href="/logout">here</a> to logout.</p>-->
+        <!--    {% for message in get_flashed_messages() %}-->
+        <!--        {{ message }}-->
+        <!--    {% endfor %}-->
 
         <!-- Bootstrap: jQuery (necessary for Bootstrap's JavaScript plugins) -->
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
@@ -155,7 +361,9 @@
         <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.7/angular.min.js"></script>
 
         <!-- Bower -->
-        <script src="static/bower_components/angular-xeditable/dist/js/xeditable.js"></script>
+        <script src="static/bower_components/angular-xeditable/dist/js/xeditable.min.js"></script>
+        <script src="static/bower_components/angular-thumbnails/dist/angular-thumbnails.min.js"></script>
+        <script src='static/bower_components/angular-upload/angular-upload.min.js'></script>
 
         <!-- Application: Javascript -->
         <script type="text/javascript" src="static/app.js"></script>

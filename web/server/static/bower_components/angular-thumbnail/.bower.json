@@ -1,0 +1,38 @@
+{
+  "name": "angular-thumbnail",
+  "main": "angular-thumbnail.min.js",
+  "version": "0.1.2",
+  "authors": [
+    "Kenny"
+  ],
+  "description": "AngularJS thumbnail service to generate blob or base64 data as well as directive to display an image as thumbnail in canvas",
+  "keywords": [
+    "angular",
+    "angularjs",
+    "thumbnail",
+    "generator",
+    "canvas"
+  ],
+  "license": "MIT",
+  "homepage": "https://github.com/kennyki/angular-thumbnail",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "blueimp-canvas-to-blob": "~2.1.1"
+  },
+  "_release": "0.1.2",
+  "_resolution": {
+    "type": "version",
+    "tag": "0.1.2",
+    "commit": "fb59a1a3b6965f4278a83a2434af7b586e5fd0b0"
+  },
+  "_source": "https://github.com/kennyki/angular-thumbnail.git",
+  "_target": "^0.1.2",
+  "_originalSource": "angular-thumbnail",
+  "_direct": true
+}

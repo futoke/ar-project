@@ -1,33 +1,32 @@
-var app = angular.module("app", ["xeditable"]);
+var app = angular.module("app", [
+    "xeditable",
+    'angular-thumbnails',
+    'lr.upload'
+]);
+
 app.run(function (editableOptions) {
     editableOptions.theme = 'bs3';
-});
-
-app.controller('Ctrl', function ($scope) {
-    $scope.user = {
-        name: 'awesome user'
-    };
 });
 
 app.controller('EditableRowCtrl', function ($scope, $filter, $http) {
     $scope.users = [
         {
             id: 1,
-            name: 'awesome user1',
+            name: 'Название 1',
             status: 2,
             group: 4,
             groupName: 'admin'
         },
         {
             id: 2,
-            name: 'awesome user2',
+            name: 'Название 1',
             status: undefined,
             group: 3,
             groupName: 'vip'
         },
         {
             id: 3,
-            name: 'awesome user3',
+            name: 'Название 1',
             status: 2,
             group: null
         }
@@ -52,9 +51,10 @@ app.controller('EditableRowCtrl', function ($scope, $filter, $http) {
     ];
     $scope.groups = [];
     $scope.loadGroups = function () {
-        return $scope.groups.length ? null : $http.get('/groups').success(function (data) {
-            $scope.groups = data;
-        });
+        // return $scope.groups.length ? null : $http.get('/groups').success(function (data) {
+        //     $scope.groups = data;
+        // });
+        $scope.groups = {};
     };
     $scope.showGroup = function (user) {
         if (user.group && $scope.groups.length) {
@@ -85,7 +85,7 @@ app.controller('EditableRowCtrl', function ($scope, $filter, $http) {
         angular.extend(data, {
             id: id
         });
-        return $http.post('/saveUser', data);
+        // return $http.post('/saveUser', data);
     };
     // remove user
     $scope.removeUser = function (index) {

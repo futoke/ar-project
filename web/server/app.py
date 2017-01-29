@@ -4,7 +4,7 @@ from flask import Flask, render_template, redirect, url_for, request, session, f
 from functools import wraps
 
 # Create the application object.
-app = Flask(__name__, static_path='/static')
+app = Flask(__name__, static_folder='./static')
 
 # Config.
 app.debug = True

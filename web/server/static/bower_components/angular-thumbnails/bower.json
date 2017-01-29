@@ -1,0 +1,19 @@
+{
+  "name": "angular-thumbnails",
+  "description": "Angular directive to render file thumbnails on a canvas.",
+  "main": "./dist/angular-thumbnails.min.js",
+  "license": "MIT",
+  "homepage": "http://github.com/aztech-digital/angular-thumbnails",
+  "dependencies": {
+     "angular": "~1.3",
+     "pdfjs-dist": "1.0.1019"
+  },
+  "ignore": [
+    ".bower.json",
+    ".gitignore",
+    "package.json",
+    "Gruntfile.js",
+    "src/**",
+    "demo/**"
+  ]
+}

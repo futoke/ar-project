@@ -8,21 +8,51 @@
         <title>AR project</title>
 
         <!-- Latest compiled and minified CSS -->
-        <link
-                rel="stylesheet"
-                href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
-                integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u"
-                crossorigin="anonymous">
+        <!--<link-->
+        <!--        rel="stylesheet"-->
+        <!--        href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"-->
+        <!--        integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u"-->
+        <!--        crossorigin="anonymous">-->
+
+        <!--<link-->
+        <!--        rel="stylesheet"-->
+        <!--        href="https://maxcdn.bootstrapcdn.com/bootswatch/3.3.7/yeti/bootstrap.min.css"-->
+        <!--        integrity="sha384-HzUaiJdCTIY/RL2vDPRGdEQHHahjzwoJJzGUkYjHVzTwXFQ2QN/nVgX7tzoMW3Ov"-->
+        <!--        crossorigin="anonymous">-->
+
+        <!--<link-->
+        <!--        rel="stylesheet"-->
+        <!--        href="https://maxcdn.bootstrapcdn.com/bootswatch/3.3.7/flatly/bootstrap.min.css"-->
+        <!--        integrity="sha384-+ENW/yibaokMnme+vBLnHMphUYxHs34h9lpdbSLuAwGkOKFRl4C34WkjazBtb7eT"-->
+        <!--        crossorigin="anonymous">-->
+
+        <!--<link-->
+        <!--        rel="stylesheet"-->
+        <!--        href="https://maxcdn.bootstrapcdn.com/bootswatch/3.3.7/lumen/bootstrap.min.css"-->
+        <!--        integrity="sha384-gv0oNvwnqzF6ULI9TVsSmnULNb3zasNysvWwfT/s4l8k5I+g6oFz9dye0wg3rQ2Q"-->
+        <!--        crossorigin="anonymous">-->
+
+        <link rel="stylesheet" href="static/bootstrap.min.css">
 
         <!-- Optional theme -->
+        <!--<link-->
+        <!--        rel="stylesheet"-->
+        <!--        href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css"-->
+        <!--        integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp"-->
+        <!--        crossorigin="anonymous">-->
+
+        <!-- Bower -->
         <link
                 rel="stylesheet"
-                href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css"
-                integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp"
-                crossorigin="anonymous">
+                href="static/bower_components/components-font-awesome/css/font-awesome.min.css">
 
         <!-- Application styles -->
         <link rel="stylesheet" href="static/style.css">
+
+        <!-- Google fonts -->
+        <link
+                rel="stylesheet"
+                href="https://fonts.googleapis.com/css?family=Philosopher:400,400i,700,700i&amp;subset=cyrillic,cyrillic-ext">
     </head>
 
     <body>
@@ -31,9 +61,11 @@
                     id="loginbox"
                     class="mainbox col-md-6 col-md-offset-3 col-sm-6 col-sm-offset-3">
 
-                <div class="panel panel-primary">
+                <div class="panel panel-default">
                     <div class="panel-heading">
-                        <div class="panel-title text-center"> Вход в панель управления </div>
+                        <div class="panel-title text-center">
+                            <h4><strong>Вход в панель управления</strong></h4>
+                        </div>
                     </div>
 
                     <div class="panel-body">
@@ -45,7 +77,7 @@
                                 method="post">
                             <div class="input-group">
                                 <span class="input-group-addon">
-                                    <i class="glyphicon glyphicon-user"></i>
+                                    <i class="fa fa-user" aria-hidden="true"></i>
                                 </span>
 
                                 <input
@@ -59,7 +91,7 @@
 
                             <div class="input-group">
                                 <span class="input-group-addon">
-                                    <i class="glyphicon glyphicon-lock"></i>
+                                    <i class="fa fa-key" aria-hidden="true"></i>
                                 </span>
 
                                 <input
@@ -79,16 +111,19 @@
                                         </span>
                                     {% endif %}
 
-                                    {% for message in get_flashed_messages() %}
+          <!--                          {% for message in get_flashed_messages() %}
                                             {{ message }}
-                                    {% endfor %}
+                                    {% endfor %}-->
                                 </div>
 
                                 <div class="col-sm-3 controls">
                                     <button
                                             type="submit"
-                                            class="btn btn-primary pull-right">
-                                        <i class="glyphicon glyphicon-log-in"></i>
+                                            class="btn btn-default pull-right">
+                                        <i
+                                                class="fa fa-sign-in"
+                                                aria-hidden="true">
+                                        </i>
                                         Войти
                                     </button>
                                 </div>

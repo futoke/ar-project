@@ -1,0 +1,23 @@
+{
+  "name": "static",
+  "homepage": "https://github.com/futoke/ar-project",
+  "authors": [
+    "Max Afanasiev <futoke@gmail.com>"
+  ],
+  "description": "",
+  "main": "",
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "angular-xeditable": "^0.6.0",
+    "components-font-awesome": "^4.7.0",
+    "angular-thumbnails": "^0.2.1",
+    "angular-upload": "^1.0.12"
+  }
+}
