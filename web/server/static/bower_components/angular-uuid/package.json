@@ -1,0 +1,33 @@
+{
+  "name": "angular-uuid",
+  "title": "angular-uuid",
+  "description": "An AngularJS wrapper for a rigorous implementation of RFC4122 (v1 and v4) UUIDs.",
+  "version": "0.0.4",
+  "homepage": "https://github.com/munkychop/angular-uuid",
+  "author": {
+    "name": "Ivan Hayes",
+    "url": "http://www.ivanhayes.com"
+  },
+  "main": "angular-uuid.js",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/munkychop/angular-uuid.git"
+  },
+  "keywords": [
+    "angular",
+    "angularjs",
+    "angular-uuid",
+    "uuid",
+    "guid",
+    "rfc4122",
+    "javascript",
+    "library"
+  ],
+  "private": false,
+  "licenses": [
+    {
+      "type": "MIT",
+      "url": "https://github.com/munkychop/angular-uuid/blob/master/LICENSE"
+    }
+  ]
+}
