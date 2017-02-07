@@ -129,16 +129,16 @@
                                                         </i> Сохранить
                                                     </button>
 
-                                                    <!--<button-->
-                                                    <!--        type="button"-->
-                                                    <!--        title="Отменить"-->
-                                                    <!--        class="btn btn-default"-->
-                                                    <!--        ng-click="cancelRow($index)">-->
-                                                    <!--    <i-->
-                                                    <!--            class="fa fa-undo"-->
-                                                    <!--            aria-hidden="true">-->
-                                                    <!--    </i> Отменить-->
-                                                    <!--</button>-->
+                                                    <button
+                                                            type="button"
+                                                            title="Отменить"
+                                                            class="btn btn-default"
+                                                            ng-click="cancelModel($index)">
+                                                        <i
+                                                                class="fa fa-undo"
+                                                                aria-hidden="true">
+                                                        </i> Отменить
+                                                    </button>
                                                 </div>
                                             </div>
 
@@ -172,13 +172,9 @@
                                             </div>
                                         </td>
 
+                                        <!-- Preview -->
                                         <td  align="center">
-                                            <thumbnail
-                                                    file-type="image"
-                                                    source="{{model.preview.content|angular}}"
-                                                    max-height="150"
-                                                    max-width="150">
-                                            </thumbnail>
+                                            <img data-ng-src="{{model.preview.thumbnail|angular}}"/>
 
                                             <div
                                                     ng-if="model.is_edited"
@@ -186,6 +182,7 @@
                                                 <div class="btn btn-default btn-upload">
                                                     <input
                                                             type="file"
+                                                            accept="image/*"
                                                             file-read="model.preview"/>
                                                     Выбрать
                                                 </div>
@@ -193,7 +190,8 @@
                                             </div>
                                         </td>
 
-                                        <td>
+                                        <!-- Name -->
+                                        <td align="center">
                                             <div ng-if="model.is_edited">
                                                 <input
                                                         type="text"
@@ -209,16 +207,51 @@
                                             </div>
                                         </td>
 
-                                        <td>
+                                        <!-- Mesh -->
+                                        <td align="center">
+                                            <p class="text-center">
+                                                {{model.mesh.name|angular}}
+                                            </p>
 
+                                            <div
+                                                    ng-if="model.is_edited"
+                                                    class="spacer">
+                                                <div class="btn btn-default btn-upload">
+                                                    <input
+                                                            type="file"
+                                                            file-read="model.mesh"/>
+                                                    Выбрать
+                                                </div>
+
+                                            </div>
                                         </td>
 
-                                        <td>
+                                        <!-- Texture -->
+                                        <td  align="center">
+                                            <img data-ng-src="{{model.texture.thumbnail|angular}}"/>
 
+                                            <div
+                                                    ng-if="model.is_edited"
+                                                    class="spacer">
+                                                <div class="btn btn-default btn-upload">
+                                                    <input
+                                                            type="file"
+                                                            accept="image/*"
+                                                            file-read="model.texture"/>
+                                                    Выбрать
+                                                </div>
+
+                                            </div>
                                         </td>
 
+                                        <!-- Date -->
                                         <td>
-
+                                            <p class="text-center">
+                                                {{ model.date|angular }}
+                                            </p>
+                                            <p class="text-center">
+                                                {{ model.time|angular }}
+                                            </p>
                                         </td>
                                     </tr>
                                 </tbody>
@@ -249,8 +282,9 @@
         <!--<script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.6.1/angular-route.js"></script>-->
 
         <!-- Bower -->
-        <script src="static/bower_components/angular-thumbnails/dist/angular-thumbnails.min.js"></script>
+        <!--<script src="static/bower_components/angular-thumbnails/dist/angular-thumbnails.min.js"></script>-->
         <script src="static/bower_components/angular-uuid/angular-uuid.js"></script>
+        <script src="static/bower_components/angular-images-resizer/angular-images-resizer.js"></script>
         <!--<script src="static/bower_components/angular-upload/angular-upload.min.js"></script>-->
         <!--<script src="static/bower_components/ng-file-upload/ng-file-upload.min.js"></script>-->
 

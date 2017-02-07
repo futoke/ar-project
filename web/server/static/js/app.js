@@ -1,12 +1,12 @@
 var app = angular.module("app", [
     // 'ngFileUpload',
-    'angular-thumbnails',
-    'angular-uuid'
-    // 'lr.upload'
+    // "angular-thumbnails",
+    "angular-uuid",
+    "images-resizer"
 ]);
 
 
-app.directive("fileRead", [function () {
+app.directive("fileRead", ["resizeService", function(resizeService) {
     return {
         scope: {
             fileRead: "="
@@ -16,13 +16,23 @@ app.directive("fileRead", [function () {
                 scope.fileRead = {};
 
                 scope.$apply(function () {
+                    // Get image name.
                     scope.fileRead.name = changeEvent.target.files[0].name;
                 });
 
                 var reader = new FileReader();
                 reader.onload = function (loadEvent) {
                     scope.$apply(function () {
+                        // Get image content.
                         scope.fileRead.content = loadEvent.target.result;
+
+                        // Resize images.
+                        resizeService.resizeImage(loadEvent.target.result, {
+                            height: 100,
+                            sizeScale: 'ko'
+                        }).then(function (image) {
+                            scope.fileRead.thumbnail = image;
+                        });
                     });
                 };
                 reader.readAsDataURL(changeEvent.target.files[0]);
@@ -31,24 +41,16 @@ app.directive("fileRead", [function () {
     };
 }]);
 
-app.controller("ModelsTableCtrl", function ($scope, $http, uuid) {
-    $scope.models = [
-        {
-            id: 1,
-            is_edited: false,
-            name: "Название 1"
-        },
-        {
-            id: 2,
-            is_edited: false,
-            name: "Название 2"
-        },
-        {
-            id: 3,
-            is_edited: false,
-            name: "Название 3"
-        }
-    ];
+app.controller("ModelsTableCtrl", function ($scope, $http, $log, uuid) {
+    $http.get("/load_models").then(successCallback, errorCallback);
+
+    function successCallback(response) {
+        console.log(response);
+        $scope.models = response.data;
+    }
+    function errorCallback(error){
+        console.log(error);
+    }
 
     $scope.is_edited = false;
 
@@ -63,11 +65,32 @@ app.controller("ModelsTableCtrl", function ($scope, $http, uuid) {
         $scope.is_edited = false;
         $scope.models[index].is_edited = false;
 
+        var now = new Date();
+        $scope.models[index].date = now.toLocaleDateString();
+        $scope.models[index].time = now.toLocaleTimeString();
+
         var url = "/save_model/" + $scope.models[index].id;
         $http.post(url, $scope.models[index]);
     };
 
+    $scope.cancelModel = function (index) {
+        var url = "/load_model/" + $scope.models[index].id;
+        $http.get(url).then(successCallback, errorCallback);
+
+        function successCallback(response) {
+            $scope.models[index] = response.data;
+        }
+        function errorCallback(error){
+            console.log(error);
+        }
+        $scope.is_edited = false;
+        $scope.models[index].is_edited = false;
+    };
+
     $scope.removeModel = function (index) {
+        var url = "/remove_model/" + $scope.models[index].id;
+        $http.post(url, $scope.models[index]);
+
         $scope.models.splice(index, 1);
     };
 
@@ -75,11 +98,16 @@ app.controller("ModelsTableCtrl", function ($scope, $http, uuid) {
         $scope.inserted = {
             id: uuid.v4(),
             is_edited: false,
-            name: '',
-            preview: {}
+            name: "",
+            date: {},
+            time: {},
+            preview: {},
+            mesh: {},
+            texture: {}
         };
         $scope.models.push($scope.inserted);
-        console.log($scope.models);
+
+        $http.post("/add_model", $scope.inserted);
     };
 
     // $scope.statuses = [

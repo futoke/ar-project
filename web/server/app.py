@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 # -*- coding:utf-8 -*-
 import os
+import json
 from functools import wraps
 
 from flask import (
@@ -17,9 +18,11 @@ from flask_triangle import Triangle
 from werkzeug.utils import secure_filename
 
 from tinydb import TinyDB, Query
+from tinydb.storages import JSONStorage
+from tinydb.middlewares import CachingMiddleware
+
 
 UPLOAD_FOLDER = 'static/models'
-ALLOWED_EXTENSIONS = set(['fbx', 'obj', 'png', 'jpg', 'jpeg'])
 
 # Create the application object.
 app = Flask(__name__, static_path='/static')
@@ -76,81 +79,78 @@ def logout():
     return redirect(url_for('welcome'))
 
 
-def allowed_file(filename):
-    return '.' in filename and \
-           filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+def del_content(data):
+    data['preview']['content'] = ''
+    data['texture']['content'] = ''
+    data['mesh']['content'] = ''
+
+    return data
 
 
-def clear_dir(path):
-    for the_file in os.listdir(path):
-        file_path = os.path.join(path, the_file)
-
-        try:
-            if os.path.isfile(file_path):
-                os.unlink(file_path)
-        except Exception as e:
-            print(e)
-
-
-@app.route('/upload/<model_name>/<action>', methods=['GET', 'POST'])
-@login_required
-def upload_file(model_name, action):
-    if action != 'remove':
-        if request.method == 'POST':
-            if 'file' not in request.files:
-                flash('No file part')
-                return redirect(request.url)
-
-            file = request.files['file']
-
-            if file.filename == '':
-                flash('No selected file')
-                return redirect(request.url)
-
-            if file and allowed_file(file.filename):
-                filename = secure_filename(file.filename)
-                path = os.path.join(
-                    app.config['UPLOAD_FOLDER'],
-                    model_name,
-                    action
-                )
-
-                if not os.path.exists(path):
-                    os.makedirs(path)
-                else:
-                    clear_dir(path)
-
-                file.save(os.path.join(path, filename))
-                return ''
-    else:
-        pass
-    return ''
-
-
-@app.route('/download/<model_name>/<file_type>')
-@login_required
-def download_file(model_name, file_type):
-    path = os.path.join(app.config['UPLOAD_FOLDER'], model_name, file_type)
-
-    try:
-        filename = os.listdir(path)[0]
-        return send_from_directory(path, filename)
-    except OSError:
-        return ''
-
+# Add only new data
 @app.route('/save_model/<model_id>', methods=['POST'])
 @login_required
 def save_model(model_id):
-    print(model_id)
-    data = request.get_json()
+    client_data = request.get_json()
 
-    with TinyDB('db.json') as db:
-        print(db.get(Query().id == model_id))
-        db.insert(data)
+    with TinyDB('db.json', storage=CachingMiddleware(JSONStorage)) as db:
+        server_data = db.get(Query().id == model_id)
 
-        # print(db.all())
+        # Holy shit!!! Bad architecture...
+        if client_data['preview']['content'] == '':
+            client_data['preview']['content'] = server_data['preview']['content']
+
+        if client_data['texture']['content'] == '':
+            client_data['texture']['content'] = server_data['texture']['content']
+
+        if client_data['mesh']['content'] == '':
+            client_data['mesh']['content'] = server_data['mesh']['content']
+
+        db.update(client_data, Query().id == model_id)
 
     return ''
+
+
+@app.route('/add_model', methods=['POST'])
+@login_required
+def add_model():
+    data = request.get_json()
+
+    with TinyDB('db.json', storage=CachingMiddleware(JSONStorage)) as db:
+        db.insert(data)
+
+    return ''
+
+
+@app.route('/remove_model/<model_id>', methods=['POST'])
+@login_required
+def remove_model(model_id):
+    with TinyDB('db.json', storage=CachingMiddleware(JSONStorage)) as db:
+        db.remove(Query().id == model_id)
+
+    return ''
+
+
+@app.route('/load_models', methods=['GET'])
+@login_required
+def load_models():
+    with TinyDB('db.json', storage=CachingMiddleware(JSONStorage)) as db:
+        data = db.all()
+
+    # Return only names and preveiw!!!
+    for i, _ in enumerate(data):
+        del_content(data[i])
+
+    return json.dumps(data)
+
+
+@app.route('/load_model/<model_id>', methods=['GET'])
+@login_required
+def load_model(model_id):
+    with TinyDB('db.json', storage=CachingMiddleware(JSONStorage)) as db:
+        data = db.get(Query().id == model_id)
+
+    return json.dumps(del_content(data))
 
 
 if __name__ == '__main__':
