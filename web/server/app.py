@@ -1,7 +1,10 @@
 #!/usr/bin/env python
 # -*- coding:utf-8 -*-
 import os
+import os.path
+import shutil
 import json
+import base64
 from functools import wraps
 
 from flask import (
@@ -11,6 +14,7 @@ from flask import (
     url_for,
     request,
     session,
+    abort,
     flash,
     send_from_directory
 )
@@ -21,17 +25,18 @@ from tinydb import TinyDB, Query
 from tinydb.storages import JSONStorage
 from tinydb.middlewares import CachingMiddleware
 
+from data_uri import DataURI
+
 
 UPLOAD_FOLDER = 'static/models'
 
 # Create the application object.
-app = Flask(__name__, static_path='/static')
+app = Flask(__name__, static_folder='static/models')
 Triangle(app)
 
 # Config.
 app.debug = True
 app.secret_key = 'wMIz4UK3=m!4525,IS441cWFI2H12l2BP2=7R<1wUun,1KoQe23!]m2A)`|{2w5'
-app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 
 # Login required decorator.
@@ -87,26 +92,36 @@ def del_content(data):
     return data
 
 
-# Add only new data
 @app.route('/save_model/<model_id>', methods=['POST'])
 @login_required
 def save_model(model_id):
-    client_data = request.get_json()
+    model_path = os.path.join(UPLOAD_FOLDER, model_id)
 
     with TinyDB('db.json', storage=CachingMiddleware(JSONStorage)) as db:
-        server_data = db.get(Query().id == model_id)
+            if db.search(Query().id == model_id):
+                data = request.get_json()
+            else:
+                return 'Cannot find a model with the id {}'.format(model_id)
 
-        # Holy shit!!! Bad architecture...
-        if client_data['preview']['content'] == '':
-            client_data['preview']['content'] = server_data['preview']['content']
+            # Write zip file.
+            if data['zipfile']['content'] != '':
+                zipfile_path = os.path.join(model_path, data['zipfile']['name'])
+                with open(zipfile_path, "wb") as fh:
+                    uri = DataURI(data['zipfile']['content'])
+                    fh.write(uri.data)
 
-        if client_data['texture']['content'] == '':
-            client_data['texture']['content'] = server_data['texture']['content']
+                data['zipfile']['content'] = ''
 
-        if client_data['mesh']['content'] == '':
-            client_data['mesh']['content'] = server_data['mesh']['content']
+            # Write preview image.
+            if data['preview']['content'] != '':
+                zipfile_path = os.path.join(model_path, data['preview']['name'])
+                with open(zipfile_path, "wb") as fh:
+                    uri = DataURI(data['preview']['content'])
+                    fh.write(uri.data)
 
-        db.update(client_data, Query().id == model_id)
+                data['preview']['content'] = ''
+
+            db.update(data, Query().id == model_id)
 
     return ''
 
@@ -115,6 +130,10 @@ def save_model(model_id):
 @login_required
 def add_model():
     data = request.get_json()
+    new_model_path = os.path.join(UPLOAD_FOLDER, data['id'])
+
+    if not os.path.exists(new_model_path):
+        os.makedirs(new_model_path)
 
     with TinyDB('db.json', storage=CachingMiddleware(JSONStorage)) as db:
         db.insert(data)
@@ -126,7 +145,28 @@ def add_model():
 @login_required
 def remove_model(model_id):
     with TinyDB('db.json', storage=CachingMiddleware(JSONStorage)) as db:
+        if not db.search(Query().id == model_id):
+            return 'Cannot find a model with the id {}'.format(model_id)
+
         db.remove(Query().id == model_id)
+        shutil.rmtree(os.path.join(UPLOAD_FOLDER, model_id))
+
+    return ''
+
+
+@app.route('/load_model_file/<model_id>/<filetype>', methods=['GET'])
+@login_required
+def get_model(model_id, filetype):
+    with TinyDB('db.json', storage=CachingMiddleware(JSONStorage)) as db:
+        if not db.search(Query().id == model_id):
+            return 'Cannot find a model with the id {}'.format(model_id)
+
+        data = db.get(Query().id == model_id)
+        if filetype in ('zipfile', 'preview'):
+            filepath = os.path.join(app.static_folder, model_id)
+            return send_from_directory(filepath, data[filetype]['name'])
+        else:
+            abort(404)
 
     return ''
 
@@ -137,10 +177,6 @@ def load_models():
     with TinyDB('db.json', storage=CachingMiddleware(JSONStorage)) as db:
         data = db.all()
 
-    # Return only names and preveiw!!!
-    for i, _ in enumerate(data):
-        del_content(data[i])
-
     return json.dumps(data)
 
 
@@ -148,9 +184,11 @@ def load_models():
 @login_required
 def load_model(model_id):
     with TinyDB('db.json', storage=CachingMiddleware(JSONStorage)) as db:
+        if not db.search(Query().id == model_id):
+            return 'Cannot find a model with the id {}'.format(model_id)
         data = db.get(Query().id == model_id)
 
-    return json.dumps(del_content(data))
+    return json.dumps(data)
 
 
 if __name__ == '__main__':

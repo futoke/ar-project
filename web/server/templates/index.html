@@ -97,8 +97,12 @@
                                             Загрузить 3D модель <br> .fbx или .obj
                                         </th>
 
-                                         <th class="text-center col-xs-2 col-md-2">
+                                        <th class="text-center col-xs-2 col-md-2">
                                             Загрузить текстуру <br> .png или .jpg
+                                        </th>
+
+                                        <th class="text-center col-xs-2 col-md-2">
+                                            Загрузить архив .zip
                                         </th>
 
                                         <th
@@ -174,7 +178,13 @@
 
                                         <!-- Preview -->
                                         <td  align="center">
-                                            <img data-ng-src="{{model.preview.thumbnail|angular}}"/>
+                                            <!--<img data-ng-src="{{model.preview.content|angular}}"/>-->
+                                            <thumbnail
+                                                    file-type="image"
+                                                    source="{{model.preview.content|angular}}"
+                                                    max-height="100"
+                                                    max-width="100">
+                                            </thumbnail>
 
                                             <div
                                                     ng-if="model.is_edited"
@@ -244,6 +254,25 @@
                                             </div>
                                         </td>
 
+                                        <!-- Zip file -->
+                                        <td align="center">
+                                            <p class="text-center">
+                                                {{model.zipfile.name|angular}}
+                                            </p>
+
+                                            <div
+                                                    ng-if="model.is_edited"
+                                                    class="spacer">
+                                                <div class="btn btn-default btn-upload">
+                                                    <input
+                                                            type="file"
+                                                            file-read="model.zipfile"/>
+                                                    Выбрать
+                                                </div>
+
+                                            </div>
+                                        </td>
+
                                         <!-- Date -->
                                         <td>
                                             <p class="text-center">
@@ -282,7 +311,7 @@
         <!--<script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.6.1/angular-route.js"></script>-->
 
         <!-- Bower -->
-        <!--<script src="static/bower_components/angular-thumbnails/dist/angular-thumbnails.min.js"></script>-->
+        <script src="static/bower_components/angular-thumbnails/dist/angular-thumbnails.min.js"></script>
         <script src="static/bower_components/angular-uuid/angular-uuid.js"></script>
         <script src="static/bower_components/angular-images-resizer/angular-images-resizer.js"></script>
         <!--<script src="static/bower_components/angular-upload/angular-upload.min.js"></script>-->

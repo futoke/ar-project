@@ -1,6 +1,6 @@
 var app = angular.module("app", [
     // 'ngFileUpload',
-    // "angular-thumbnails",
+    "angular-thumbnails",
     "angular-uuid",
     "images-resizer"
 ]);
@@ -15,8 +15,9 @@ app.directive("fileRead", ["resizeService", function(resizeService) {
             element.bind("change", function (changeEvent) {
                 scope.fileRead = {};
 
+                var filetype = changeEvent.target.files[0];
                 scope.$apply(function () {
-                    // Get image name.
+                    // Get file name.
                     scope.fileRead.name = changeEvent.target.files[0].name;
                 });
 
@@ -26,13 +27,15 @@ app.directive("fileRead", ["resizeService", function(resizeService) {
                         // Get image content.
                         scope.fileRead.content = loadEvent.target.result;
 
-                        // Resize images.
-                        resizeService.resizeImage(loadEvent.target.result, {
-                            height: 100,
-                            sizeScale: 'ko'
-                        }).then(function (image) {
-                            scope.fileRead.thumbnail = image;
-                        });
+                        // Resize only images.
+                        if (filetype == 'image/jpeg' || filetype == 'image/png') {
+                            resizeService.resizeImage(loadEvent.target.result, {
+                                height: 100,
+                                sizeScale: 'ko'
+                            }).then(function (image) {
+                                scope.fileRead.thumbnail = image;
+                            });
+                        }
                     });
                 };
                 reader.readAsDataURL(changeEvent.target.files[0]);
@@ -45,7 +48,6 @@ app.controller("ModelsTableCtrl", function ($scope, $http, $log, uuid) {
     $http.get("/load_models").then(successCallback, errorCallback);
 
     function successCallback(response) {
-        console.log(response);
         $scope.models = response.data;
     }
     function errorCallback(error){
@@ -65,6 +67,8 @@ app.controller("ModelsTableCtrl", function ($scope, $http, $log, uuid) {
         $scope.is_edited = false;
         $scope.models[index].is_edited = false;
 
+        // Maybe check the changes here.
+
         var now = new Date();
         $scope.models[index].date = now.toLocaleDateString();
         $scope.models[index].time = now.toLocaleTimeString();
@@ -74,6 +78,7 @@ app.controller("ModelsTableCtrl", function ($scope, $http, $log, uuid) {
     };
 
     $scope.cancelModel = function (index) {
+        // Load only meta data without content!
         var url = "/load_model/" + $scope.models[index].id;
         $http.get(url).then(successCallback, errorCallback);
 
@@ -83,6 +88,7 @@ app.controller("ModelsTableCtrl", function ($scope, $http, $log, uuid) {
         function errorCallback(error){
             console.log(error);
         }
+        // Erase content!!!
         $scope.is_edited = false;
         $scope.models[index].is_edited = false;
     };
@@ -101,83 +107,13 @@ app.controller("ModelsTableCtrl", function ($scope, $http, $log, uuid) {
             name: "",
             date: {},
             time: {},
-            preview: {},
+            preview: {name: "", content: ""},
             mesh: {},
-            texture: {}
+            texture: {},
+            zipfile: {name: "", content: ""}
         };
         $scope.models.push($scope.inserted);
 
         $http.post("/add_model", $scope.inserted);
     };
-
-    // $scope.statuses = [
-    //     {
-    //         value: 1,
-    //         text: 'status1'
-    //     },
-    //     {
-    //         value: 2,
-    //         text: 'status2'
-    //     },
-    //     {
-    //         value: 3,
-    //         text: 'status3'
-    //     },
-    //     {
-    //         value: 4,
-    //         text: 'status4'
-    //     }
-    // ];
-    // $scope.groups = [];
-    // $scope.loadGroups = function () {
-    //     // return $scope.groups.length ? null : $http.get('/groups').success(function (data) {
-    //     //     $scope.groups = data;
-    //     // });
-    //     $scope.groups = {};
-    // };
-    // $scope.showGroup = function (user) {
-    //     if (user.group && $scope.groups.length) {
-    //         var selected = $filter('filter')($scope.groups, {
-    //             id: user.group
-    //         });
-    //         return selected.length ? selected[0].text : 'Not set';
-    //     } else {
-    //         return user.groupName || 'Not set';
-    //     }
-    // };
-    // $scope.showStatus = function (user) {
-    //     var selected = [];
-    //     if (user.status) {
-    //         selected = $filter('filter')($scope.statuses, {
-    //             value: user.status
-    //         });
-    //     }
-    //     return selected.length ? selected[0].text : 'Not set';
-    // };
-    // $scope.checkName = function (data, id) {
-    //     if (id === 2 && data !== 'awesome') {
-    //         return "Username 2 should be `awesome`";
-    //     }
-    // };
-    // $scope.saveUser = function (data, id) {
-    //     //$scope.user not updated yet
-    //     angular.extend(data, {
-    //         id: id
-    //     });
-    //     // return $http.post('/saveUser', data);
-    // };
-    // // remove user
-    // $scope.removeUser = function (index) {
-    //     $scope.users.splice(index, 1);
-    // };
-    // // add user
-    // $scope.addUser = function () {
-    //     $scope.inserted = {
-    //         id: $scope.users.length + 1,
-    //         name: '',
-    //         status: null,
-    //         group: null
-    //     };
-    //     $scope.users.push($scope.inserted);
-    // };
 });
