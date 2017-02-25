@@ -1,0 +1,42 @@
+{
+  "name": "angular-images-resizer",
+  "version": "2.0.2",
+  "homepage": "https://github.com/FBerthelot/angular-images-resizer",
+  "authors": [
+    "Florent Berthelot <florent.berthelot35@gmail.com>"
+  ],
+  "description": "Resize images client-side is now possible with this angular module",
+  "main": [
+    "angular-images-resizer.js"
+  ],
+  "ignore": [
+    "example",
+    "script",
+    "test",
+    "task",
+    "dist"
+  ],
+  "keywords": [
+    "angular",
+    "angularjs",
+    "image",
+    "resize",
+    "resizer",
+    "client-side"
+  ],
+  "license": "MIT",
+  "private": false,
+  "dependencies": {
+    "angular": "1.x.x"
+  },
+  "_release": "2.0.2",
+  "_resolution": {
+    "type": "version",
+    "tag": "2.0.2",
+    "commit": "aebc495ac44e65db8fd39da1ff36a3fcf0e504ff"
+  },
+  "_source": "https://github.com/FBerthelot/angular-images-resizer.git",
+  "_target": "^2.0.2",
+  "_originalSource": "angular-images-resizer",
+  "_direct": true
+}

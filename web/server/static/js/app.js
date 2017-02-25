@@ -1,6 +1,6 @@
 var app = angular.module("app", [
     // 'ngFileUpload',
-    "angular-thumbnails",
+    // "ui.thumbnail",
     "angular-uuid",
     "images-resizer"
 ]);
@@ -15,7 +15,6 @@ app.directive("fileRead", ["resizeService", function(resizeService) {
             element.bind("change", function (changeEvent) {
                 scope.fileRead = {};
 
-                var filetype = changeEvent.target.files[0];
                 scope.$apply(function () {
                     // Get file name.
                     scope.fileRead.name = changeEvent.target.files[0].name;
@@ -24,17 +23,20 @@ app.directive("fileRead", ["resizeService", function(resizeService) {
                 var reader = new FileReader();
                 reader.onload = function (loadEvent) {
                     scope.$apply(function () {
-                        // Get image content.
-                        scope.fileRead.content = loadEvent.target.result;
-
-                        // Resize only images.
+                        // Get file content.
+                        var filetype = changeEvent.target.files[0].type;
+                        // Resize image.
                         if (filetype == 'image/jpeg' || filetype == 'image/png') {
                             resizeService.resizeImage(loadEvent.target.result, {
                                 height: 100,
+                                width: 100,
                                 sizeScale: 'ko'
-                            }).then(function (image) {
-                                scope.fileRead.thumbnail = image;
+                            })
+                            .then(function(image) {
+                                scope.fileRead.content = image;
                             });
+                        } else {
+                            scope.fileRead.content = loadEvent.target.result;
                         }
                     });
                 };
@@ -44,7 +46,8 @@ app.directive("fileRead", ["resizeService", function(resizeService) {
     };
 }]);
 
-app.controller("ModelsTableCtrl", function ($scope, $http, $log, uuid) {
+app.controller("ModelsTableCtrl", function ($scope, $http, $log, uuid, resizeService) {
+
     $http.get("/load_models").then(successCallback, errorCallback);
 
     function successCallback(response) {
@@ -85,10 +88,10 @@ app.controller("ModelsTableCtrl", function ($scope, $http, $log, uuid) {
         function successCallback(response) {
             $scope.models[index] = response.data;
         }
-        function errorCallback(error){
+        function errorCallback(error) {
             console.log(error);
         }
-        // Erase content!!!
+
         $scope.is_edited = false;
         $scope.models[index].is_edited = false;
     };
@@ -107,9 +110,10 @@ app.controller("ModelsTableCtrl", function ($scope, $http, $log, uuid) {
             name: "",
             date: {},
             time: {},
-            preview: {name: "", content: ""},
-            mesh: {},
-            texture: {},
+            preview: {
+                name: "",
+                content: ""
+            },
             zipfile: {name: "", content: ""}
         };
         $scope.models.push($scope.inserted);
