@@ -52,6 +52,7 @@ app.controller("ModelsTableCtrl", function ($scope, $http, $log, uuid, resizeSer
 
     function successCallback(response) {
         $scope.models = response.data;
+        console.log($scope.models);
     }
     function errorCallback(error){
         console.log(error);

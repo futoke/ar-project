@@ -69,6 +69,7 @@ def login():
         if request.form['username'] != LOGIN or request.form['password'] != PASSWORD:
             error = u'Неверный логин или пароль'
         else:
+            session['logged_in'] = True
             return redirect(url_for('home'))
     return render_template('login.html', error=error)
 
@@ -76,6 +77,7 @@ def login():
 @app.route('/logout')
 @login_required
 def logout():
+    session.pop('logged_in', None)
     return redirect(url_for('login'))
 
 
@@ -155,6 +157,15 @@ def get_model(model_id):
     return ''
 
 
+@app.route('/load_models_list', methods=['POST'])
+def load_models_list():
+    if request.form['username'] == LOGIN or request.form['password'] == PASSWORD:
+        with TinyDB('db.json', storage=CachingMiddleware(JSONStorage)) as db:
+            data = db.all()
+        return json.dumps(data)
+    return
+
+
 @app.route('/load_models', methods=['GET'])
 @login_required
 def load_models():
@@ -176,4 +187,4 @@ def load_model(model_id):
 
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=8080, threaded=True)
+    app.run(host='0.0.0.0', port=8080)
